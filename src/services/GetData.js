@@ -1,6 +1,8 @@
 export function GetData(queryURL, authToken){
-    var newToken = authToken.slice(1, authToken.length-1); //Remove quotes
-    console.log(authToken);
+    //Remove quotes from "'aaa'" to "aaa"
+    var newToken = authToken.slice(1, authToken.length-1);
+
+    //Fetch API
     return new Promise((resolve, reject) =>{
         fetch(queryURL, {
             method: 'GET',

@@ -25,22 +25,24 @@ class Home extends Component {
         }
     }
 
+    //Set value of query
     onChange = (event) =>{
         event.preventDefault();
         this.setState({
             [event.target.name] : event.target.value
         })
-        console.log(this.state);
     }
 
-    generateTableHead(table, data) {
+    //Generate Table
+    generateTableHead(table) {
         let thead = table.createTHead();
         let row = thead.insertRow();
-        for (let key of data) {
-        let th = document.createElement("th");
-        let text = document.createTextNode(key);
-        th.appendChild(text);
-        row.appendChild(th);
+        let key = ["Nama","NIM TPB","NIM Jurusan","Program Studi"]
+        for (let i = 0;i<4;i++) {
+            let th = document.createElement("th");
+            let text = document.createTextNode(key[i]);
+            th.appendChild(text);
+            row.appendChild(th);
         }
     }
 
@@ -59,36 +61,38 @@ class Home extends Component {
         let table = document.querySelector("table");
         let cols = Object.keys(data[0]);
         this.generateTable(table, data); // generate the table first
-        this.generateTableHead(table, cols); // then the head
+        this.generateTableHead(table); // then the head
     }
 
+    //Actions taken if user clicked Search button
     onSearch = event => {
         event.preventDefault();
     
         const query = this.state.query;
         var queryURL = 'https://api.stya.net/nim/';
 
-
-        //Clear table
+        //Clear search results (table or "not found")
         var parent = document.getElementById("tableID");
         while(parent.hasChildNodes())
         {
             parent.removeChild(parent.firstChild);
         }
-
         document.getElementById("notfound").innerHTML = "";
 
         if (query === '') {
-          return;
+            return;
         }
     
+        //Recognize the query, Name/Number
         var ord = query.charCodeAt(0) - "0".charCodeAt(0);
         if((ord >= 0) && (ord <= 9)){
             queryURL = queryURL + 'byid?query=';
         } else{
             queryURL = queryURL + 'byname?name=';
         }
-        queryURL = queryURL + query + '&count=10'; // Change this for other option
+
+        //Create URL for query
+        queryURL = queryURL + query + '&count=10'; 
         const token = sessionStorage.getItem("authToken");
         GetData(queryURL, token).then((result) =>{
             var responseJson = result;
@@ -96,14 +100,14 @@ class Home extends Component {
                 alert("Something wrong!");
                 let myString = JSON.stringify(result);
                 alert(myString);
-                //this.setState({redirectToReferrer: true});
+                this.setState({redirectToReferrer: true});
             } else{
                 let payload = responseJson.payload;
                 var data = [];
                 for (var i=0;i<payload.length;i++) {
                     data.push(JSON.parse(JSON.stringify(payload[i])));
-                    console.log(data[i]);
                 }
+                //Check the data of payload
                 if(data.length === 0){
                     document.getElementById("notfound").innerHTML = "Tidak ada hasil yang ditemukan!";
                 } else{
@@ -130,14 +134,14 @@ class Home extends Component {
                 <h2 align="center">ITB NIM Finder</h2>
             </header>
             <body className="Home-body">
-                <form onSubmit = {this.onSearch}>
+                <form className="Search" onSubmit = {this.onSearch}>
                     <input 
                         name="query"
                         placeholder="Masukkan Nama/NIM"
                         type="text"
                         onChange={this.onChange}
                     />
-                    <input type="submit" value="Search"/>
+                    <button type="submit">Search</button>
                 </form>
                 <p id="notfound">
 
@@ -145,6 +149,7 @@ class Home extends Component {
                 <table id="tableID">
                     
                 </table>
+                <br />
             </body>
             <footer className="Home-footer">
                     Masukkan Nama atau NIM. Salah satu saja<br />

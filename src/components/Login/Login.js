@@ -16,12 +16,19 @@ class Login extends Component {
         this.onChange = this.onChange.bind(this);
     }
 
+    // Lifecycle
+    componentWillMount(){
+        if(sessionStorage.getItem("authToken")){
+            this.setState({redirectToReferrer: true});
+        }
+    }
+
+    //Set value of username and password
     onChange = (event) =>{
         event.preventDefault();
         this.setState({
             [event.target.name] : event.target.value
         })
-        console.log(this.state);
     }
 
     login(){
@@ -32,13 +39,15 @@ class Login extends Component {
         PostData('login', userData).then((result) =>{
             if(result.code === 0){
                 sessionStorage.setItem('authToken',JSON.stringify(result.token));
-                this.setState({redirectToRefererrer: true});
+                this.setState({
+                    redirectToRefererrer: true}
+                );
             } else{
                 alert("Something wrong!");
+                let myString = JSON.stringify(result);
+                alert(myString);
             }
-            let myString = JSON.stringify(result);
-            alert(myString);
-        })
+        });
     }
 
     render(){
@@ -49,7 +58,7 @@ class Login extends Component {
         return (
         <div className="App">
             <header className="Login-header">
-                <h2 align="center">ITB NIM Finder</h2>
+                <h1 align="center">ITB NIM Finder</h1>
                 <img src={logo} className="App-logo" alt="logo" />
                 <form onSubmit = {this.login}>
                     <input 

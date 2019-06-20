@@ -10,18 +10,25 @@ class Register extends Component {
         this.state = {
             username: "",
             password: "",
-            redirectToRefererrer: false
+            redirectToReferrer: false
         }
         this.register = this.register.bind(this);
         this.onChange = this.onChange.bind(this);
     }
 
+    // Lifecycle
+    componentWillMount(){
+        if(sessionStorage.getItem("authToken")){
+            this.setState({redirectToReferrer: true});
+        }
+    }
+
+    //Set value of username and password
     onChange = (event) =>{
         event.preventDefault();
         this.setState({
             [event.target.name] : event.target.value
         })
-        console.log(this.state);
     }
 
     register(){
@@ -32,23 +39,25 @@ class Register extends Component {
         PostData('register', userData).then((result) =>{
             if(result.code === 0){
                 alert("Registration success!");
+            } else if(result.code === -4){
+                alert("Username already taken!");
             } else{
-                alert("Something wrong!");
+                alert("Something went wrong!");
+                let myString = JSON.stringify(result);
+                alert(myString);
             }
-            let myString = JSON.stringify(result);
-            alert(myString);
         })
     }
 
     render(){
-        if (sessionStorage.getItem('authToken')) {
-            return (<Redirect to={'/home'}/>)
+        if ((sessionStorage.getItem('authToken')) || (this.state.redirectToReferrer)) {
+            return (<Redirect to={'/home'}/>);
         }
         return (
         <div className="App">
             <header className="App-header">
-                <h1 align="center">REGISTER</h1>
                 <h2 align="center">ITB NIM Finder</h2>
+                <h1 align="center">REGISTER</h1>
                 <img src={logo} className="App-logo" alt="logo" />
                 <form onSubmit = {this.register}>
                     <input 
@@ -69,7 +78,7 @@ class Register extends Component {
                 </form>
                 <p align="center">
                     Masukkan username dan password baru Anda<br />
-                    Sudah punya akun? <a href="/login">Login di sini</a>
+                    Sudah punya akun? <a href="/login" className="App-link">Login di sini</a>
                 </p>
             </header>
         </div>

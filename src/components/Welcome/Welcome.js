@@ -13,7 +13,7 @@ class Welcome extends Component {
             <header className="App-header">
                 <h2 align="center">ITB NIM Finder - Hendpraz</h2>
                 <img src={logo} className="App-logo" alt="logo" />
-                <a href="/login" className="button">Login</a>
+                <a href="/login" className="button1">Login</a>
                 <a href="/register" className="button2">Register</a>
             </header>
         </div>
