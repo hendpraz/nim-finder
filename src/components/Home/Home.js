@@ -2,19 +2,18 @@ import React, { Component } from 'react';
 import './Home.css';
 import {Redirect} from 'react-router-dom'
 import { GetData } from '../../services/GetData';
+import Table from './Table';
 
 class Home extends Component {
     constructor(props){
         super(props)
         this.state = {
             query: '',
+            JSONData: [],
             redirectToReferrer: false
         }
         this.onChange = this.onChange.bind(this);
         this.onSearch = this.onSearch.bind(this);
-        this.generateTableHead = this.generateTableHead.bind(this);
-        this.generateTable = this.generateTable.bind(this);
-        this.tableCreate = this.tableCreate.bind(this);
         this.logout = this.logout.bind(this);
     }
 
@@ -31,40 +30,12 @@ class Home extends Component {
         this.setState({
             [event.target.name] : event.target.value
         })
-    }
-
-    //Generate Table
-    generateTableHead(table) {
-        let thead = table.createTHead();
-        let row = thead.insertRow();
-        let key = ["Nama","NIM TPB","NIM Jurusan","Program Studi"]
-        for (let i = 0;i<4;i++) {
-            let th = document.createElement("th");
-            let text = document.createTextNode(key[i]);
-            th.appendChild(text);
-            row.appendChild(th);
+        var parent = document.getElementById("tableID");
+        while(parent.hasChildNodes()){
+            parent.removeChild(parent.firstChild);
         }
     }
 
-    generateTable(table, cols) {
-        for (let element of cols) {
-            let row = table.insertRow();
-            for (let key in element) {
-                let cell = row.insertCell();
-                let text = document.createTextNode(element[key]);
-                cell.appendChild(text);
-            }
-        }
-    }
-
-    tableCreate(data){
-        let table = document.querySelector("table");
-        let cols = Object.keys(data[0]);
-        this.generateTable(table, data); // generate the table first
-        this.generateTableHead(table); // then the head
-    }
-
-    //Actions taken if user clicked Search button
     onSearch = event => {
         event.preventDefault();
     
@@ -73,8 +44,7 @@ class Home extends Component {
 
         //Clear search results (table or "not found")
         var parent = document.getElementById("tableID");
-        while(parent.hasChildNodes())
-        {
+        while(parent.hasChildNodes()){
             parent.removeChild(parent.firstChild);
         }
         document.getElementById("notfound").innerHTML = "";
@@ -100,7 +70,9 @@ class Home extends Component {
                 alert("Something wrong!");
                 let myString = JSON.stringify(result);
                 alert(myString);
-                this.setState({redirectToReferrer: true});
+                this.setState({
+                    redirectToReferrer: true
+                });
             } else{
                 let payload = responseJson.payload;
                 var data = [];
@@ -110,8 +82,13 @@ class Home extends Component {
                 //Check the data of payload
                 if(data.length === 0){
                     document.getElementById("notfound").innerHTML = "Tidak ada hasil yang ditemukan!";
+                    this.setState({
+                        JSONData : []
+                    })
                 } else{
-                    this.tableCreate(data);
+                   this.setState({
+                        JSONData : data
+                   })
                 }
             }
         });
@@ -146,9 +123,7 @@ class Home extends Component {
                 <p id="notfound">
 
                 </p>
-                <table id="tableID">
-                    
-                </table>
+                <Table id="tableID" data={this.state.JSONData}/>
                 <br />
             </body>
             <footer className="Home-footer">
