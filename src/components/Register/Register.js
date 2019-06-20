@@ -78,7 +78,7 @@ class Register extends Component {
                 </form>
                 <p align="center">
                     Masukkan username dan password baru Anda<br />
-                    Sudah punya akun? <a href="/login" className="App-link">Login di sini</a>
+                    Sudah punya akun? <a href="/nim-finder/#/login" className="App-link">Login di sini</a>
                 </p>
             </header>
         </div>

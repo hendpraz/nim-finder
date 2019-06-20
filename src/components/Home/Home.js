@@ -183,7 +183,7 @@ class Home extends Component {
 
     render(){
         if (this.state.redirectToReferrer) {
-            return (<Redirect to={'/login'}/>)
+            return (<Redirect to={'/login'}/>);
         }
         
         return (
