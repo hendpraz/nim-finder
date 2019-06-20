@@ -42,6 +42,8 @@ class Login extends Component {
                 this.setState({
                     redirectToRefererrer: true}
                 );
+            } else if(result.code === -2){
+                alert("Wrong username/password");
             } else{
                 alert("Something wrong!");
                 let myString = JSON.stringify(result);
