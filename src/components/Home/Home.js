@@ -76,7 +76,7 @@ class Home extends Component {
         }
 
         //Create URL for query
-        queryURL = queryURL + query + '&count=10' + '&page=' + this.state.pageNum.toString(); 
+        queryURL = queryURL + query + '&count=10'; 
         const token = sessionStorage.getItem("authToken");
         GetData(queryURL, token).then((result) =>{
             var responseJson = result;
@@ -103,9 +103,10 @@ class Home extends Component {
                     })
                 } else{
                     this.clearTable();
+                    let temp = queryURL + '&page=' + this.state.pageNum.toString()
                     this.setState({
                         JSONData : data,
-                        currQuery : queryURL.slice(0,queryURL.length-1)
+                        currQuery : temp.slice(0,temp.length-1)
                     })
                     if(data.length === 10){
                         this.toggleShow();
