@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/nim-finder/static/css/main.9f7d6c43.chunk.css",
-    "main.js": "/nim-finder/static/js/main.0dda40c8.chunk.js",
-    "main.js.map": "/nim-finder/static/js/main.0dda40c8.chunk.js.map",
+    "main.js": "/nim-finder/static/js/main.5a34cbf4.chunk.js",
+    "main.js.map": "/nim-finder/static/js/main.5a34cbf4.chunk.js.map",
     "runtime~main.js": "/nim-finder/static/js/runtime~main.5854a2c3.js",
     "runtime~main.js.map": "/nim-finder/static/js/runtime~main.5854a2c3.js.map",
     "static/js/2.bcb6fdd1.chunk.js": "/nim-finder/static/js/2.bcb6fdd1.chunk.js",
     "static/js/2.bcb6fdd1.chunk.js.map": "/nim-finder/static/js/2.bcb6fdd1.chunk.js.map",
     "index.html": "/nim-finder/index.html",
-    "precache-manifest.f3adeeca7e061c4d826aac7915b6bed4.js": "/nim-finder/precache-manifest.f3adeeca7e061c4d826aac7915b6bed4.js",
+    "precache-manifest.17718f3d4278904f430017cd38b080c5.js": "/nim-finder/precache-manifest.17718f3d4278904f430017cd38b080c5.js",
     "service-worker.js": "/nim-finder/service-worker.js",
     "static/css/main.9f7d6c43.chunk.css.map": "/nim-finder/static/css/main.9f7d6c43.chunk.css.map",
     "static/media/logo.svg": "/nim-finder/static/media/logo.5d5d9eef.svg"
