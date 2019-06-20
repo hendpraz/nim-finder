@@ -70,7 +70,7 @@ class Login extends Component {
                 </form>
                 <p align="center">
                     Masukkan username dan password.<br />
-                    Belum daftar? <a href="register">Daftar di sini</a>
+                    Belum daftar? <a href="register" className="App-link">Daftar di sini</a>
                 </p>
             </header>
         </div>
