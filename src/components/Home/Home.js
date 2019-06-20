@@ -10,11 +10,15 @@ class Home extends Component {
         this.state = {
             query: '',
             JSONData: [],
+            currQuery: '',
+            pageNum: 0,
             redirectToReferrer: false
         }
         this.onChange = this.onChange.bind(this);
         this.onSearch = this.onSearch.bind(this);
         this.logout = this.logout.bind(this);
+        this.clearTable = this.clearTable.bind(this);
+        this.nextPage = this.nextPage.bind(this);
     }
 
     // Lifecycle
@@ -24,12 +28,21 @@ class Home extends Component {
         }
     }
 
+    componentDidMount(){
+        this.toggleHide();
+    }
+
     //Set value of query
     onChange = (event) =>{
         event.preventDefault();
         this.setState({
             [event.target.name] : event.target.value
         })
+        this.clearTable();
+        console.log(this.state);
+    }
+
+    clearTable(){
         var parent = document.getElementById("tableID");
         while(parent.hasChildNodes()){
             parent.removeChild(parent.firstChild);
@@ -41,12 +54,13 @@ class Home extends Component {
     
         const query = this.state.query;
         var queryURL = 'https://api.stya.net/nim/';
+        this.setState({
+            pageNum: 0
+        })
 
         //Clear search results (table or "not found")
-        var parent = document.getElementById("tableID");
-        while(parent.hasChildNodes()){
-            parent.removeChild(parent.firstChild);
-        }
+        this.toggleHide();
+        this.clearTable();
         document.getElementById("notfound").innerHTML = "";
 
         if (query === '') {
@@ -62,7 +76,7 @@ class Home extends Component {
         }
 
         //Create URL for query
-        queryURL = queryURL + query + '&count=10'; 
+        queryURL = queryURL + query + '&count=10' + '&page=' + this.state.pageNum.toString(); 
         const token = sessionStorage.getItem("authToken");
         GetData(queryURL, token).then((result) =>{
             var responseJson = result;
@@ -81,18 +95,84 @@ class Home extends Component {
                 }
                 //Check the data of payload
                 if(data.length === 0){
+                    this.clearTable();
+                    console.log("HAHA");
                     document.getElementById("notfound").innerHTML = "Tidak ada hasil yang ditemukan!";
                     this.setState({
                         JSONData : []
                     })
                 } else{
-                   this.setState({
-                        JSONData : data
-                   })
+                    this.clearTable();
+                    this.setState({
+                        JSONData : data,
+                        currQuery : queryURL.slice(0,queryURL.length-1)
+                    })
+                    if(data.length === 10){
+                        this.toggleShow();
+                    } else{
+                        this.toggleHide();
+                    }
                 }
             }
         });
     };
+
+    toggleHide(){
+        var x = document.getElementById("nextButton");
+        x.style.display = "none";
+    }
+
+    toggleShow(){
+        var x = document.getElementById("nextButton");
+        x.style.display = "block";
+    }
+
+    nextPage = event =>{
+        event.preventDefault();
+
+        this.setState({
+            pageNum: this.state.pageNum + 1
+        })
+        this.clearTable();
+
+        var queryURL = this.state.currQuery + this.state.pageNum.toString();
+        const token = sessionStorage.getItem("authToken");
+        GetData(queryURL, token).then((result) =>{
+            var responseJson = result;
+            if(responseJson.status !== "OK"){
+                alert("Something wrong!");
+            } else{
+                let payload = responseJson.payload;
+                var data = [];
+                for (var i=0;i<payload.length;i++) {
+                    data.push(JSON.parse(JSON.stringify(payload[i])));
+                }
+                //Check the data of payload
+                if(data.length === 0){
+                    this.clearTable();
+                    document.getElementById("notfound").innerHTML = "Tidak ada hasil yang ditemukan!";
+                    this.setState({
+                        JSONData : []
+                    });
+                    this.toggleHide();
+                } else{
+                    this.clearTable();
+                    this.setState({
+                        JSONData : data
+                    })
+                    if(data.length === 10){
+                        this.toggleShow();
+                    } else{
+                        this.clearTable();
+                        this.setState({
+                            pageNum : 0
+                        })
+                        this.toggleHide();
+                    }
+                }
+            }
+        });
+    }
 
     logout(){
         sessionStorage.setItem("authToken",'');
@@ -110,7 +190,7 @@ class Home extends Component {
             <header className="Home-header">
                 <h2 align="center">ITB NIM Finder</h2>
             </header>
-            <body className="Home-body">
+            <body id="bodypart" className="Home-body">
                 <form className="Search" onSubmit = {this.onSearch}>
                     <input 
                         name="query"
@@ -123,6 +203,9 @@ class Home extends Component {
                 <p id="notfound">
 
                 </p>
+                
+                <button id="nextButton" onClick={this.nextPage}>NEXT</button>
+                <br />
                 <Table id="tableID" data={this.state.JSONData}/>
                 <br />
             </body>
